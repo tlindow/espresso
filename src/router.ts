@@ -12,16 +12,14 @@ function parseHash(): Route {
   if (parts.length === 0) return { page: 'home' };
 
   switch (parts[0]) {
-    case 'log':
-      return { page: 'log' };
-    case 'shot':
-      return { page: 'shot', id: parts[1] };
-    case 'cafes':
-      return { page: 'cafes' };
-    case 'cafe':
-      return { page: 'cafe', id: parts[1] };
-    case 'journal':
-      return { page: 'journal' };
+    case 'add':
+      return { page: 'add' };
+    case 'review':
+      return { page: 'review', id: parts[1] };
+    case 'shops':
+      return { page: 'shops' };
+    case 'shop':
+      return { page: 'shop', id: parts[1] };
     case 'settings':
       return { page: 'settings' };
     default:

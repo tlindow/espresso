@@ -33,7 +33,7 @@ export function Settings() {
       try {
         const text = await file.text();
         const result = await importData(text);
-        setImportStatus(`Imported ${result.shots} shots and ${result.cafes} cafes`);
+        setImportStatus(`Imported ${result.reviews} reviews and ${result.shops} shops`);
       } catch {
         setImportStatus('Import failed — invalid file format');
       }

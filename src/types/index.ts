@@ -1,26 +1,15 @@
-export interface Shot {
+export interface Review {
   id: string;
-  cafeId: string;
+  shopId: string;
   createdAt: string;
-  updatedAt: string;
-  crema: number;
-  body: number;
-  acidity: number;
-  sweetness: number;
-  overallScore: number;
-  beanOrigin?: string;
-  roaster?: string;
+  flavor: number;       // 1-5
   notes?: string;
-  price?: number;
 }
 
-export interface Cafe {
+export interface Shop {
   id: string;
   name: string;
   address?: string;
   city?: string;
-  lat?: number;
-  lng?: number;
   createdAt: string;
-  updatedAt: string;
 }

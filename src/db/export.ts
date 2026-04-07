@@ -1,38 +1,38 @@
 import { getDB } from './index';
-import type { Shot, Cafe } from '../types';
+import type { Review, Shop } from '../types';
 
 interface ExportData {
-  version: 1;
+  version: 2;
   exportedAt: string;
-  shots: Shot[];
-  cafes: Cafe[];
+  reviews: Review[];
+  shops: Shop[];
 }
 
 export async function exportData(): Promise<string> {
   const db = await getDB();
   const data: ExportData = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
-    shots: await db.getAll('shots'),
-    cafes: await db.getAll('cafes'),
+    reviews: await db.getAll('reviews'),
+    shops: await db.getAll('shops'),
   };
   return JSON.stringify(data, null, 2);
 }
 
-export async function importData(json: string): Promise<{ shots: number; cafes: number }> {
+export async function importData(json: string): Promise<{ reviews: number; shops: number }> {
   const data: ExportData = JSON.parse(json);
-  if (data.version !== 1) throw new Error('Unsupported export version');
+  if (data.version !== 2) throw new Error('Unsupported export version');
 
   const db = await getDB();
-  const tx = db.transaction(['shots', 'cafes'], 'readwrite');
+  const tx = db.transaction(['reviews', 'shops'], 'readwrite');
 
-  for (const cafe of data.cafes) {
-    await tx.objectStore('cafes').put(cafe);
+  for (const shop of data.shops) {
+    await tx.objectStore('shops').put(shop);
   }
-  for (const shot of data.shots) {
-    await tx.objectStore('shots').put(shot);
+  for (const review of data.reviews) {
+    await tx.objectStore('reviews').put(review);
   }
 
   await tx.done;
-  return { shots: data.shots.length, cafes: data.cafes.length };
+  return { reviews: data.reviews.length, shops: data.shops.length };
 }

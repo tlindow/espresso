@@ -1,75 +1,73 @@
 import { useState, useEffect } from 'preact/hooks';
-import { getAllShots } from '../db/shots';
-import { getAllCafes } from '../db/cafes';
-import { ShotCard } from '../components/ShotCard';
-import { CafeCard } from '../components/CafeCard';
+import { getAllReviews } from '../db/reviews';
+import { getAllShops } from '../db/shops';
+import { ReviewCard } from '../components/ReviewCard';
+import { ShopCard } from '../components/ShopCard';
 import { EmptyState } from '../components/EmptyState';
-import type { Shot, Cafe } from '../types';
+import type { Review, Shop } from '../types';
 
 export function Home() {
-  const [shots, setShots] = useState<Shot[]>([]);
-  const [cafes, setCafes] = useState<Cafe[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getAllShots(), getAllCafes()]).then(([s, c]) => {
-      setShots(s);
-      setCafes(c);
+    Promise.all([getAllReviews(), getAllShops()]).then(([r, s]) => {
+      setReviews(r);
+      setShops(s);
       setLoading(false);
     });
   }, []);
 
   if (loading) return null;
 
-  if (shots.length === 0) {
+  if (reviews.length === 0) {
     return (
-      <>
-        <EmptyState
-          icon={'\u2615'}
-          text="No espresso shots logged yet. Start your journey!"
-          action={{ label: 'Log Your First Shot', href: '#/log' }}
-        />
-      </>
+      <EmptyState
+        icon={'\u2615'}
+        text="No reviews yet. Rate your first coffee shop!"
+        action={{ label: 'Add Review', href: '#/add' }}
+      />
     );
   }
 
-  const cafeMap = new Map(cafes.map((c) => [c.id, c]));
-  const recentShots = shots.slice(0, 5);
+  const shopMap = new Map(shops.map((s) => [s.id, s]));
+  const recent = reviews.slice(0, 5);
 
-  // Top cafes by average score
-  const cafeScores = new Map<string, { total: number; count: number }>();
-  for (const shot of shots) {
-    const entry = cafeScores.get(shot.cafeId) ?? { total: 0, count: 0 };
-    entry.total += shot.overallScore;
+  // Top shops by avg flavor
+  const shopScores = new Map<string, { total: number; count: number }>();
+  for (const r of reviews) {
+    const entry = shopScores.get(r.shopId) ?? { total: 0, count: 0 };
+    entry.total += r.flavor;
     entry.count++;
-    cafeScores.set(shot.cafeId, entry);
+    shopScores.set(r.shopId, entry);
   }
-  const topCafes = cafes
-    .map((c) => {
-      const s = cafeScores.get(c.id);
-      return { cafe: c, avgScore: s ? s.total / s.count : 0, shotCount: s?.count ?? 0 };
+  const topShops = shops
+    .map((s) => {
+      const sc = shopScores.get(s.id);
+      return { shop: s, avgFlavor: sc ? sc.total / sc.count : 0, reviewCount: sc?.count ?? 0 };
     })
-    .filter((c) => c.shotCount > 0)
-    .sort((a, b) => b.avgScore - a.avgScore)
+    .filter((s) => s.reviewCount > 0)
+    .sort((a, b) => b.avgFlavor - a.avgFlavor)
     .slice(0, 3);
 
   return (
     <div>
-      <div class="section-title">Recent Shots</div>
-      {recentShots.map((s) => (
-        <ShotCard key={s.id} shot={s} cafe={cafeMap.get(s.cafeId)} />
+      <div class="section-title">Recent Reviews</div>
+      {recent.map((r) => (
+        <ReviewCard key={r.id} review={r} shop={shopMap.get(r.shopId)} />
       ))}
 
-      {topCafes.length > 0 && (
+      {topShops.length > 0 && (
         <>
-          <div class="section-title" style={{ marginTop: '24px' }}>Top Cafes</div>
-          {topCafes.map(({ cafe, avgScore, shotCount }) => (
-            <CafeCard key={cafe.id} cafe={cafe} avgScore={avgScore} shotCount={shotCount} />
+          <div class="section-title" style={{ marginTop: '24px' }}>Top Shops</div>
+          {topShops.map(({ shop, avgFlavor, reviewCount }) => (
+            <ShopCard key={shop.id} shop={shop} avgFlavor={avgFlavor} reviewCount={reviewCount} />
           ))}
         </>
       )}
 
-      <a href="#/log" class="fab" aria-label="Log new shot">+</a>
+      <a href="#/add" class="fab" aria-label="Add review">+</a>
     </div>
   );
 }

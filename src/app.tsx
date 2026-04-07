@@ -1,11 +1,10 @@
 import { useRoute } from './router';
 import { Layout } from './components/Layout';
 import { Home } from './views/Home';
-import { LogShot } from './views/LogShot';
-import { ShotDetail } from './views/ShotDetail';
-import { CafeList } from './views/CafeList';
-import { CafeDetail } from './views/CafeDetail';
-import { Journal } from './views/Journal';
+import { AddReview } from './views/AddReview';
+import { ReviewDetail } from './views/ReviewDetail';
+import { ShopList } from './views/ShopList';
+import { ShopDetail } from './views/ShopDetail';
 import { Settings } from './views/Settings';
 
 export function App() {
@@ -13,20 +12,17 @@ export function App() {
 
   let view;
   switch (route.page) {
-    case 'log':
-      view = <LogShot />;
+    case 'add':
+      view = <AddReview />;
       break;
-    case 'shot':
-      view = <ShotDetail id={route.id!} />;
+    case 'review':
+      view = <ReviewDetail id={route.id!} />;
       break;
-    case 'cafes':
-      view = <CafeList />;
+    case 'shops':
+      view = <ShopList />;
       break;
-    case 'cafe':
-      view = <CafeDetail id={route.id!} />;
-      break;
-    case 'journal':
-      view = <Journal />;
+    case 'shop':
+      view = <ShopDetail id={route.id!} />;
       break;
     case 'settings':
       view = <Settings />;

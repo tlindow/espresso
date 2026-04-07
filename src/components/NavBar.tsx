@@ -2,9 +2,8 @@ import { useRoute } from '../router';
 
 const tabs = [
   { page: 'home', path: '#/', label: 'Home', icon: '\u2302' },
-  { page: 'log', path: '#/log', label: 'Log', icon: '+' },
-  { page: 'cafes', path: '#/cafes', label: 'Cafes', icon: '\u2615' },
-  { page: 'journal', path: '#/journal', label: 'Journal', icon: '\u2630' },
+  { page: 'add', path: '#/add', label: 'Review', icon: '+' },
+  { page: 'shops', path: '#/shops', label: 'Shops', icon: '\u2615' },
   { page: 'settings', path: '#/settings', label: 'Settings', icon: '\u2699' },
 ] as const;
 
